@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/23 20:25:27 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:30:11 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ static int	flags_read(char const *format, int start)
 {
 	int	i;
 
-	i = 2;
-	while (ft_strchr("dioxXucsp%", format[start + i - 1]) == NULL)
+	i = 1;
+	while (ft_strchr("dioxXucsp%", format[start + i]) == NULL)
 		i++;
-	return (i);
+	return (i + 1);
 }
 
 static int	handle_conversion(char const *format, va_list args)
@@ -42,16 +42,15 @@ int	ft_printf(char const *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			handle_conversion(format, args);
+			size += handle_conversion(format, args);
 			i += flags_read(format, i);
-			ft_putchar(format[i]);//
 		} 
 		else
 		{
 			ft_putchar(format[i]);
 			size++;
+			i++;
 		}
-		i++;
 	}
 	va_end(args);
 	return (size);
