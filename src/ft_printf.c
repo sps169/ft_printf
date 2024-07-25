@@ -6,7 +6,7 @@
 /*   By: sps169 <sps169@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/23 22:17:22 by sps169           ###   ########.fr       */
+/*   Updated: 2024/07/25 07:31:41 by sps169           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	handle_conversion(char const *format, va_list args, size_t start)
 				flags.precision = ft_atoi(format+(start+i));
 		}
 		else if (format[start + i] == '.')
-			flags.
+			flags.period++;
 
 	}
 	return (0);
