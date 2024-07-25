@@ -10,6 +10,7 @@ CFLAGS	=  -Wall -Wextra -Werror #-fsanitize=address -g3
 
 SRCS	=	$(SRC_DIR)ft_printf.c		\
 			$(SRC_DIR)utils.c			\
+			$(SRC_DIR)ft_atoi.c			\
 			
 OBJS		=	$(SRCS:.c=.o)
 

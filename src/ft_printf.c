@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sps169 <sps169@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 07:31:41 by sps169           ###   ########.fr       */
+/*   Updated: 2024/07/25 11:49:50 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+static int do_printing(char type, va_list args, t_flags flags) {
+	(void)args;
+	(void)type;
+	(void)flags;
+	return (0);
+}
 
 static t_flags init_flags()
 {
@@ -40,11 +47,12 @@ static int	flags_read(char const *format, int start)
 static int	handle_conversion(char const *format, va_list args, size_t start)
 {
 	size_t	i;
+	size_t	j;
 	t_flags flags;
 
 	i = 1;
 	flags = init_flags();
-	while (ft_strchr("dioxXucsp%", format[start + i]) == NULL)
+	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && ft_strchr("+0-# ", format[start + i]) != NULL)
 	{
 		if (format[start + i] == '-')
 			flags.minus++;
@@ -56,17 +64,41 @@ static int	handle_conversion(char const *format, va_list args, size_t start)
 			flags.blank++;
 		else if (format[start + i] == '#')
 			flags.hash++;
-		else if (ft_isdigit(format[start + i]))
-		{	if (flags.period == 0)
-				flags.min_width = ft_atoi(format+(start+i));
-			else
-				flags.precision = ft_atoi(format+(start+i));
-		}
-		else if (format[start + i] == '.')
-			flags.period++;
-
+		i++;
 	}
-	return (0);
+	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && (ft_isdigit(format[start + i])))
+	{
+		if (flags.min_width == 0)
+			flags.min_width = ft_atoi(format + (start + i));
+		i++;
+	}
+	if (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && format[start + i] == '.')
+	{
+		flags.period++;
+		i++;
+	}
+	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && (ft_isdigit(format[start + i])))
+	{
+		if (flags.precision == 0)
+			flags.precision = ft_atoi(format+(start+i));
+		i++;
+	}
+	if (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) != NULL)
+	{
+		write(1, "GOOD\n", 5);
+		return (do_printing(format[start + i], args, flags));
+	}
+	else
+	{
+		write(1, "BAD\n", 5);
+		j = 0;
+		while(format[start + j] && j <= i)
+		{
+			ft_putchar(format[start + j]);
+			j++;
+		}
+		return (flags_read(format, start));
+	}
 }
 
 int	ft_printf(char const *format, ...)
