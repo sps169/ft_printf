@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sps169 <sps169@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:28 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/23 22:11:04 by sps169           ###   ########.fr       */
+/*   Updated: 2024/07/25 13:24:33 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,21 @@ typedef struct s_flags {
 } t_flags;
 
 int	ft_printf(char const *format, ...);
+
+//prints
+int	print_arg_char(char character, t_flags flags);
+
+int	print_arg_string(char *string, t_flags flags);
+
+int	print_arg_pointer(void *pointer, t_flags flags);
+
+int	print_arg_decimal(int decimal, t_flags flags);
+
+int	print_arg_unsigned_decimal(unsigned int decimal, t_flags flags);
+
+int	print_arg_hex(unsigned int hex, t_flags flags);
+
+int	print_arg_hex_mayus(unsigned int hex, t_flags flags);
 
 //utils
 size_t	ft_strlen(const char *str);
