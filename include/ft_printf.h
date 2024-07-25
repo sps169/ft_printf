@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sps169 <sps169@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:28 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/23 20:20:52 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/23 22:11:04 by sps169           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,9 @@ size_t	ft_strlen(const char *str);
 void	ft_putchar(char c);
 
 char	*ft_strchr(const char *s, int c);
+
+int	ft_isdigit(int c);
+
+int	ft_atoi(const char *str);
 
 #endif
