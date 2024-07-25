@@ -11,6 +11,7 @@ CFLAGS	=  -Wall -Wextra -Werror #-fsanitize=address -g3
 SRCS	=	$(SRC_DIR)ft_printf.c			\
 			$(SRC_DIR)utils.c				\
 			$(SRC_DIR)ft_atoi.c				\
+			$(SRC_DIR)ft_itoa.c				\
 			$(SRC_DIR)ft_printf_handler.c	\
 			$(SRC_DIR)ft_printf_handler_2.c	\
 			

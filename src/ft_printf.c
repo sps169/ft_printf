@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 13:55:19 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:31:11 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,9 @@ static int	handle_conversion(char const *format, va_list args, size_t start)
 		i++;
 	}
 	if (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) != NULL)
-	{
-		write(1, "GOOD\n", 5);
 		return (do_printing(format[start + i], args, flags));
-	}
 	else
 	{
-		write(1, "BAD\n", 5);
 		j = 0;
 		while(format[start + j] && j <= i)
 		{

@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:28 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 13:24:33 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:28:59 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdarg.h>
 # include <unistd.h>
+# include <stdlib.h>
 
 typedef struct s_flags {
 	int		plus;
@@ -55,5 +56,11 @@ char	*ft_strchr(const char *s, int c);
 int	ft_isdigit(int c);
 
 int	ft_atoi(const char *str);
+
+char	*ft_itoa(int n);
+
+int	ft_putnbr_base(unsigned long num, char *base, size_t base_len);
+
+int	ft_nbr_writer(unsigned long num, char *base, size_t base_len);
 
 #endif
