@@ -6,36 +6,11 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 17:31:11 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/28 15:16:14 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-static int do_printing(char type, va_list arg, t_flags flags) {
-	if (type == 'c') //-5
-		return (print_arg_char(va_arg(arg, int), flags));
-	else if (type == 's')//-5.1
-		return (print_arg_string(va_arg(arg, char *), flags));
-	else if (type == 'i')//+-0 5.1
-		return (print_arg_decimal(va_arg(arg, int), flags));
-	else if (type == 'p')//-5
-		return (print_arg_pointer(va_arg(arg, void *), flags));
-	else if (type == 'd')//+-0 5.1
-		return (print_arg_decimal(va_arg(arg, int), flags));
-	else if (type == 'u')//-05.1
-		return (print_arg_unsigned_decimal(va_arg(arg, unsigned int), flags));
-	else if (type == 'x')//-0#5.1
-		return (print_arg_hex(va_arg(arg, unsigned int), flags));
-	else if (type == 'X')//-0#5.1
-		return (print_arg_hex_mayus(va_arg(arg, unsigned int), flags));
-	else if (type == '%')
-	{
-		write(1, "%", 1);
-		return (1);
-	}
-	return (0);
-}
 
 static t_flags init_flags()
 {
@@ -52,70 +27,92 @@ static t_flags init_flags()
 	return (flags);
 }
 
-static int	flags_read(char const *format, int start)
+static void	advance_format_flags(char const *format, t_flags *flags, int *j)
 {
-	int	i;
-
-	i = 1;
-	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL)
-		i++;
-	if (!format[start + i])
-		return (i);
-	else	
-		return (i + 1);
+	while (format[*j] && ft_strchr("+-0 #",format[*j]))
+	{
+		if (format[*j] == '+')
+			(*flags).plus++;
+		else if (format[*j] == '-')
+			(*flags).minus++;
+		else if (format[*j] == '0')
+			(*flags).zero++;
+		else if (format[*j] == ' ')
+			(*flags).blank++;
+		else if (format[*j] == '#')
+			(*flags).hash++;
+		*j++;
+	}
 }
 
-static int	handle_conversion(char const *format, va_list args, size_t start)
+static void	advance_format_flags(char const *format, t_flags *flags, int *j)
 {
-	size_t	i;
-	size_t	j;
-	t_flags flags;
+	while (format[*j] && ft_isdigit(format[*j]))
+	{
+		if ((*flags).min_width == 0)
+			(*flags).min_width = ft_atoi(format + *j);
+		*j++;
+	}
+	if (format[*j] && format[*j] == '.')
+	{
+		(*flags).period++;
+		*j++;
+	}
+	while (format[*j] && ft_isdigit(format[*j]) && (*flags).period > 0)
+	{
+		if ((*flags).precision == 0)
+			(*flags).precision = ft_atoi(format + *j);
+		*j++;
+	}
+}
 
-	i = 1;
+static int	flags_read(char const *format, va_list args, int *i)
+{
+	t_flags	flags;
+	int		j;
+	int		start;
+
+	start = *i;
+	j = 1;
 	flags = init_flags();
-	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && ft_strchr("+0-# ", format[start + i]) != NULL)
+	advance_format_flags(format + start, &flags, &j);
+	advance_min_max_flags(format + start, &flags, &j);
+	if (ft_strchr("dioxXucsp%", (format + start)[j]) == NULL)
 	{
-		if (format[start + i] == '-')
-			flags.minus++;
-		else if (format[start + i] == '+')
-			flags.plus++;
-		else if (format[start + i] == '0')
-			flags.zero++;
-		else if (format[start + i] == ' ')
-			flags.blank++;
-		else if (format[start + i] == '#')
-			flags.hash++;
-		i++;
+		*i += j;
+		return (write(1, format + start, j));
 	}
-	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && (ft_isdigit(format[start + i])))
-	{
-		if (flags.min_width == 0)
-			flags.min_width = ft_atoi(format + (start + i));
-		i++;
-	}
-	if (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && format[start + i] == '.')
-	{
-		flags.period++;
-		i++;
-	}
-	while (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) == NULL && (ft_isdigit(format[start + i])))
-	{
-		if (flags.precision == 0)
-			flags.precision = ft_atoi(format+(start+i));
-		i++;
-	}
-	if (format[start + i] && ft_strchr("dioxXucsp%", format[start + i]) != NULL)
-		return (do_printing(format[start + i], args, flags));
 	else
 	{
-		j = 0;
-		while(format[start + j] && j <= i)
-		{
-			ft_putchar(format[start + j]);
-			j++;
-		}
-		return (flags_read(format, start));
+		*i += j + 1;
+		return (handle_conversion((format + start)[j], args, flags));
 	}
+}
+
+static int	handle_conversion(char conversion, va_list args, t_flags flags)
+{
+	if (conversion == 'c') //-5
+		return (print_arg_char(va_arg(args, int), flags));
+	else if (conversion == 's')//-5.1
+		return (print_arg_string(va_arg(args, char *), flags));
+	else if (conversion == 'i')//+-0 5.1
+		return (print_arg_decimal(va_arg(args, int), flags));
+	else if (conversion == 'p')//-5
+		return (print_arg_pointer(va_arg(args, void *), flags));
+	else if (conversion == 'd')//+-0 5.1
+		return (print_arg_decimal(va_arg(args, int), flags));
+	else if (conversion == 'u')//-05.1
+		return (print_arg_unsigned_decimal(va_arg(args, unsigned int), flags));
+	else if (conversion == 'x')//-0#5.1
+		return (print_arg_hex(va_arg(args, unsigned int), flags));
+	else if (conversion == 'X')//-0#5.1
+		return (print_arg_hex_mayus(va_arg(args, unsigned int), flags));
+	else if (conversion == '%')
+	{
+		write(1, "%", 1);
+		return (1);
+	}
+	return (0);
 }
 
 int	ft_printf(char const *format, ...)
@@ -127,13 +124,10 @@ int	ft_printf(char const *format, ...)
 	size = 0;
 	i = 0;
 	va_start(args, format);
-	while ((format) && i < ft_strlen(format))
+	while ((format) && format[i])
 	{
 		if (format[i] == '%')
-		{
-			size += handle_conversion(format, args, i);
-			i += flags_read(format, i);
-		} 
+			size += flags_read(format, args, &i);
 		else
 		{
 			ft_putchar(format[i]);
