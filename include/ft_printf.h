@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:28 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 17:28:59 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/28 16:21:30 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,7 @@ char	*ft_itoa(int n);
 int	ft_putnbr_base(unsigned long num, char *base, size_t base_len);
 
 int	ft_nbr_writer(unsigned long num, char *base, size_t base_len);
+
+char	*ft_utoa_base(unsigned long num, char *base, t_flags flags);
 
 #endif
