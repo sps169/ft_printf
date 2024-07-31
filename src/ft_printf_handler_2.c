@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 13:15:08 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 17:29:39 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/31 21:44:26 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,15 @@ int	print_arg_string(char *string, t_flags flags)
 int	print_arg_decimal(int decimal, t_flags flags)
 {
 	char	*pointer;
-	size_t	len;
 	int		printed;
 
-	(void)flags;
-	pointer = ft_itoa(decimal);
-	len = ft_strlen(pointer);
-	printed = write(1, pointer, len);
+	pointer = ft_itoa(decimal, flags);
+	if (!pointer)
+	{
+		write(1, "{MALLOC_ERROR}", 14);
+		return (0);
+	}
+	printed = justify_print(pointer, flags);
 	free(pointer);
 	return (printed);
 }

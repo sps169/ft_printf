@@ -6,17 +6,19 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:27:47 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/25 17:28:09 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/07/31 22:09:34 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	get_total_int_digits(int n)
+static int	get_total_int_digits(int n, int precision)
 {
 	int	digits;
 
 	digits = 0;
+	if (n == 0 && precision == 0)
+		return (0);
 	while (n / 10 != 0)
 	{
 		n = n / 10;
@@ -25,7 +27,7 @@ static int	get_total_int_digits(int n)
 	return (digits + 1);
 }
 
-static char	*fill_ascii(char *ascii_n, int n, int size)
+static char	*fill_ascii(char *ascii_n, int n, int size, t_flags flags)
 {
 	int	digit;
 
@@ -36,7 +38,11 @@ static char	*fill_ascii(char *ascii_n, int n, int size)
 	size--;
 	if (n < 0)
 		ascii_n[0] = '-';
-	while (n / 10 != 0)
+	if (n >= 0 && flags.blank)
+		ascii_n[0] = ' ';
+	if (n >= 0 && flags.plus)
+		ascii_n[0] = '+';
+	while (n != 0)
 	{
 		digit = (n % 10);
 		if (digit < 0)
@@ -45,22 +51,24 @@ static char	*fill_ascii(char *ascii_n, int n, int size)
 		size--;
 		n = n / 10;
 	}
-	if (n < 0)
-		n *= -1;
-	ascii_n[size] = (n % 10) + '0';
+	while (size > 0)
+		ascii_n[size--] = '0';
 	return (ascii_n);
 }
 
-char	*ft_itoa(int n)
+char	*ft_itoa(int n, t_flags flags)
 {
 	char	*ascii_n;
 	int		size;
 
 	ascii_n = NULL;
-	size = 0;
-	size = get_total_int_digits(n);
-	if (n < 0)
+	size = get_total_int_digits(n, flags.precision);
+	if (size < flags.precision)
+		size = flags.precision;
+	else if (size < flags.min_width && flags.zero && !flags.minus)
+		size = flags.min_width;
+	if (n < 0 || flags.blank || flags.plus)
 		size++;
-	ascii_n = fill_ascii(ascii_n, n, size);
+	ascii_n = fill_ascii(ascii_n, n, size, flags);
 	return (ascii_n);
 }
