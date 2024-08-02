@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:27:47 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 20:27:05 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 23:12:14 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,12 @@ char	*ft_itoa(int n, t_flags flags)
 	size = get_total_int_digits(n, flags.precision);
 	if (size < flags.precision && flags.precision != -1)
 		size = flags.precision;
-	else if (size < flags.min_width && flags.zero && !flags.minus)
+	else if (size < flags.min_width && flags.zero && flags.precision == -1 && !flags.minus)
+	{
 		size = flags.min_width;
+		if (n < 0 || flags.blank || flags.plus)
+			size--;
+	}
 	if (n < 0 || flags.blank || flags.plus)
 		size++;
 	ascii_n = fill_ascii(n, size, flags);

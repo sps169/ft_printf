@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 20:02:13 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 23:36:32 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_flags init_flags()
 	t_flags flags;
 	flags.blank = 0;
 	flags.hash = 0;
-	flags.min_width = 0;
+	flags.min_width = -1;
 	flags.minus = 0;
 	flags.period = 0;
 	flags.plus = 0;
@@ -47,9 +47,22 @@ static void	advance_format_flags(char const *format, t_flags *flags, int *j)
 
 static void	advance_min_max_flags(char const *format, t_flags *flags, int *j, va_list args)
 {
+	int	va_arg;
+
+	if (format[*j] && format[*j] == '*')
+	{
+		va_arg = va_arg(args, int);
+		if (va_arg < 0)
+		{
+			va_arg *= -1;
+			(*flags).minus++;
+		}
+		(*flags).min_width = va_arg;
+		*j = *j + 1;
+	}
 	while (format[*j] && ft_isdigit(format[*j]))
 	{
-		if ((*flags).min_width == 0)
+		if ((*flags).min_width == -1)
 			(*flags).min_width = ft_atoi(format + *j);
 		*j = *j + 1;
 	}
@@ -59,9 +72,15 @@ static void	advance_min_max_flags(char const *format, t_flags *flags, int *j, va
 		(*flags).precision = 0;
 		*j = *j + 1;
 	}
-	if (format[*j] && format[*j] == '*')
+	if (format[*j] && format[*j] == '*' && (*flags).period > 0)
 	{
-		(*flags).precision = va_arg(args, int);
+		va_arg = va_arg(args, int);
+		if (va_arg < 0)
+		{
+			va_arg *= -1;
+			(*flags).minus++;
+		}
+		(*flags).precision = va_arg;
 		*j = *j + 1;
 	}
 	while (format[*j] && ft_isdigit(format[*j]) && (*flags).period > 0)
@@ -116,6 +135,7 @@ static int	flags_read(char const *format, va_list args, int *i)
 	}
 	else
 	{
+		flags.type = (format + start)[j];
 		*i += j + 1;
 		return (handle_conversion((format + start)[j], args, flags));
 	}
