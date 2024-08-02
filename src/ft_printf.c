@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 23:36:32 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 23:38:40 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,7 @@ static void	advance_min_max_flags(char const *format, t_flags *flags, int *j, va
 		va_arg = va_arg(args, int);
 		if (va_arg < 0)
 		{
-			va_arg *= -1;
-			(*flags).minus++;
+			va_arg = -1;
 		}
 		(*flags).precision = va_arg;
 		*j = *j + 1;
