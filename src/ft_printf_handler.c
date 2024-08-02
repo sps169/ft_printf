@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 13:14:31 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/28 17:11:19 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:05:06 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,32 @@
 
 int	print_arg_pointer(void *pointer, t_flags flags)
 {
-	(void)flags;
-	int	n;
+	t_flags	new_flags;
+	char	*print;
+	char	*num_str;
+	int		n;
 
-	write(1, "0x", 2);
-	n = ft_putnbr_base((unsigned long) pointer, "0123456789abcdef", 16);
-	return (2 + n);
+	new_flags = init_flags();
+	new_flags.min_width = flags.min_width;
+	new_flags.minus = flags.minus;
+	if (pointer)
+	{
+		num_str = ft_utoa_base((unsigned long) pointer, "0123456789abcdef", new_flags);
+		if (!num_str)
+			return (0);
+		print = ft_strjoin("0x", num_str);
+		if (print)
+		{
+			n = justify_print(print, new_flags);
+			free(num_str);
+			free(print);
+		}
+		else
+			free(num_str);
+	}
+	else
+		n = justify_print("(nil)", new_flags);
+	return (n);
 }
 
 int	justify_print(char *print, t_flags flags)
@@ -62,23 +82,30 @@ int	print_arg_unsigned_decimal(unsigned int decimal, t_flags flags)
 	size = justify_print(print, flags);
 	free(print);
 	return (size);
-
 }
 
-int	print_arg_hex(unsigned int hex, t_flags flags)
+int	print_arg_hex(unsigned int hex, t_flags flags, int mayus)
 {
-	(void)flags;
-	int	n;
+	char	*print;
+	char	*aux;
+	int		size;
 
-	n = ft_putnbr_base(hex, "0123456789abcdef", 16);
-	return (n);
-}
-
-int	print_arg_hex_mayus(unsigned int hex, t_flags flags)
-{
-	(void)flags;
-	int	n;
-
-	n = ft_putnbr_base(hex, "0123456789ABCDEF", 16);
-	return (n);
+	if (mayus)
+		print = ft_utoa_base((unsigned int) hex, "0123456789ABCDEF", flags);
+	else
+		print = ft_utoa_base((unsigned int) hex, "0123456789abcdef", flags);
+	if (!print)
+	{
+		write(1, "{MALLOC_ERROR}", 14);
+		return (0);
+	}
+	if (flags.hash)
+	{
+		aux = print;
+		print = ft_strjoin("0x", print);
+		free(aux);
+	}
+	size = justify_print(print, flags);
+	free(print);
+	return (size);
 }

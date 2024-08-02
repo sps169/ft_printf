@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:27:47 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/31 22:09:34 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:27:05 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,23 @@ static int	get_total_int_digits(int n, int precision)
 	return (digits + 1);
 }
 
-static char	*fill_ascii(char *ascii_n, int n, int size, t_flags flags)
+static char	*fill_ascii(int n, int size, t_flags flags)
 {
-	int	digit;
+	char	*ascii_n;
+	int		digit;
+	int		is_neg;
 
+	is_neg = 0;
 	ascii_n = malloc((size + 1) * sizeof(char));
 	if (ascii_n == NULL)
 		return (NULL);
 	ascii_n[size] = 0;
 	size--;
 	if (n < 0)
+	{
+		is_neg = 1;
 		ascii_n[0] = '-';
+	}
 	if (n >= 0 && flags.blank)
 		ascii_n[0] = ' ';
 	if (n >= 0 && flags.plus)
@@ -51,7 +57,7 @@ static char	*fill_ascii(char *ascii_n, int n, int size, t_flags flags)
 		size--;
 		n = n / 10;
 	}
-	while (size > 0)
+	while (size > 0 || (size == 0 && !is_neg && !flags.blank && !flags.plus))
 		ascii_n[size--] = '0';
 	return (ascii_n);
 }
@@ -63,12 +69,12 @@ char	*ft_itoa(int n, t_flags flags)
 
 	ascii_n = NULL;
 	size = get_total_int_digits(n, flags.precision);
-	if (size < flags.precision)
+	if (size < flags.precision && flags.precision != -1)
 		size = flags.precision;
 	else if (size < flags.min_width && flags.zero && !flags.minus)
 		size = flags.min_width;
 	if (n < 0 || flags.blank || flags.plus)
 		size++;
-	ascii_n = fill_ascii(ascii_n, n, size, flags);
+	ascii_n = fill_ascii(n, size, flags);
 	return (ascii_n);
 }

@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 13:15:08 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/31 21:44:26 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 19:55:09 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,50 +29,25 @@ int	print_arg_char(char character, t_flags flags)
 	return (writen);
 }
 
-static int	print_null_string(t_flags flags)
-{
-	int	writen;
-
-	writen = 0;
-	char null[] = "(null)";
-	if (flags.precision == 0 || flags.precision >= 6)
-	{
-		if (flags.minus)
-			writen += write(1, null, ft_strlen(null));
-	}
-	while (writen < flags.min_width)
-		writen += write(1, " ", 1);
-	return (writen);
-}
-
 int	print_arg_string(char *string, t_flags flags)
 {
-	int	to_write;
-	int	i;
-	int	writen;
+	char	*print;
 
-	i = 0;
 	if (!string)
-		return (print_null_string(flags));
-	if (ft_strlen(string) < (size_t) flags.precision || flags.precision == 0)
-		to_write = ft_strlen(string);
-	else if (ft_strlen(string) >= (size_t) flags.precision)
-		to_write = flags.precision;
-	if (flags.minus)
 	{
-		while (string[i] && i < to_write)
-			writen += write(1, &string[i++], 1);
-		while (writen < flags.min_width)
-			writen += write(1, " ", 1);
+		if (flags.precision >= 6 || flags.precision == -1)
+			return (justify_print("(null)", flags));
+		else
+			return (justify_print("", flags));
 	}
-	else
+	if (flags.precision < (int) ft_strlen(string) && flags.precision != -1)
 	{
-		while (writen + to_write < flags.min_width)
-			writen += write(1, " ", 1);
-		while (string[i] && i < to_write)
-			writen += write(1, &string[i++], 1);
-	}
-	return (writen);
+		print = ft_substr(string, 0, flags.precision);
+		if (!print)
+			return (0);
+	} else
+		print = string;
+	return (justify_print(print, flags));
 }
 
 int	print_arg_decimal(int decimal, t_flags flags)

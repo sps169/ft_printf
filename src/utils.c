@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:27:35 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/28 17:43:45 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:08:52 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	*ft_utoa_base(unsigned long num, char *base, t_flags flags)
 	}
 	if (num == 0 && flags.precision > 0)
 		num_size = 1;
-	if (num_size < flags.precision)
+	if (num_size < flags.precision && flags.precision != -1)
 		string = malloc(sizeof(char) * (flags.precision + 1));
 	else
 		string = malloc(sizeof(char) * (num_size + 1));
@@ -99,7 +99,7 @@ char	*ft_utoa_base(unsigned long num, char *base, t_flags flags)
 	int i;
 
 	diff = flags.precision - num_size;
-	if (!flags.precision || diff < 0)
+	if (flags.precision == -1 || diff < 0)
 		diff = 0;
 	i = 0;
 	while (i < diff && diff > 0)

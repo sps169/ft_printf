@@ -6,13 +6,13 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/07/31 21:57:49 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:02:13 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static t_flags init_flags()
+t_flags init_flags()
 {
 	t_flags flags;
 	flags.blank = 0;
@@ -45,7 +45,7 @@ static void	advance_format_flags(char const *format, t_flags *flags, int *j)
 	}
 }
 
-static void	advance_min_max_flags(char const *format, t_flags *flags, int *j)
+static void	advance_min_max_flags(char const *format, t_flags *flags, int *j, va_list args)
 {
 	while (format[*j] && ft_isdigit(format[*j]))
 	{
@@ -56,11 +56,17 @@ static void	advance_min_max_flags(char const *format, t_flags *flags, int *j)
 	if (format[*j] && format[*j] == '.')
 	{
 		(*flags).period++;
+		(*flags).precision = 0;
+		*j = *j + 1;
+	}
+	if (format[*j] && format[*j] == '*')
+	{
+		(*flags).precision = va_arg(args, int);
 		*j = *j + 1;
 	}
 	while (format[*j] && ft_isdigit(format[*j]) && (*flags).period > 0)
 	{
-		if ((*flags).precision == -1)
+		if ((*flags).precision == 0)
 			(*flags).precision = ft_atoi(format + *j);
 		*j = *j + 1;
 	}
@@ -81,9 +87,9 @@ static int	handle_conversion(char conversion, va_list args, t_flags flags)
 	else if (conversion == 'p')//-5
 		return (print_arg_pointer(va_arg(args, void *), flags));
 	else if (conversion == 'x')//-0#5.1
-		return (print_arg_hex(va_arg(args, unsigned int), flags));
+		return (print_arg_hex(va_arg(args, unsigned int), flags, 0));
 	else if (conversion == 'X')//-0#5.1
-		return (print_arg_hex_mayus(va_arg(args, unsigned int), flags));
+		return (print_arg_hex(va_arg(args, unsigned int), flags, 1));
 	else if (conversion == '%')
 	{
 		write(1, "%", 1);
@@ -102,7 +108,7 @@ static int	flags_read(char const *format, va_list args, int *i)
 	j = 1;
 	flags = init_flags();
 	advance_format_flags(format + start, &flags, &j);
-	advance_min_max_flags(format + start, &flags, &j);
+	advance_min_max_flags(format + start, &flags, &j, args);
 	if (ft_strchr("dioxXucsp%", (format + start)[j]) == NULL)
 	{
 		*i += j;

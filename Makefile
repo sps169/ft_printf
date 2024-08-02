@@ -12,6 +12,8 @@ SRCS	=	$(SRC_DIR)ft_printf.c			\
 			$(SRC_DIR)utils.c				\
 			$(SRC_DIR)ft_atoi.c				\
 			$(SRC_DIR)ft_itoa.c				\
+			$(SRC_DIR)ft_strjoin.c			\
+			$(SRC_DIR)ft_substr.c			\
 			$(SRC_DIR)ft_printf_handler.c	\
 			$(SRC_DIR)ft_printf_handler_2.c	\
 			
