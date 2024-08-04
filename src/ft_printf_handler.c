@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 13:14:31 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/04 13:47:31 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 18:51:08 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,32 +60,6 @@ int	print_arg_unsigned_decimal(unsigned int decimal, t_flags flags)
 	{
 		write(1, "{MALLOC_ERROR}", 14);
 		return (0);
-	}
-	size = justify_print(print, flags);
-	free(print);
-	return (size);
-}
-
-int	print_arg_hex(unsigned int hex, t_flags flags, int mayus)
-{
-	char	*print;
-	char	*aux;
-	int		size;
-
-	if (mayus)
-		print = ft_utoa_base((unsigned int) hex, "0123456789ABCDEF", flags);
-	else
-		print = ft_utoa_base((unsigned int) hex, "0123456789abcdef", flags);
-	if (!print)
-	{
-		write(1, "{MALLOC_ERROR}", 14);
-		return (0);
-	}
-	if (flags.hash)
-	{
-		aux = print;
-		print = ft_strjoin("0x", print);
-		free(aux);
 	}
 	size = justify_print(print, flags);
 	free(print);

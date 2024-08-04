@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 13:28:37 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/04 14:07:03 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 19:08:39 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static void	before_print_format(int *i, int diff, t_flags flags)
 	char	blank;
 
 	blank = ' ';
-	if (flags.zero && flags.precision == -1
-		&& (flags.type == 'u' || flags.type == 'x' || flags.type == 'X'))
+	if (flags.zero && flags.precision == -1 && (flags.type == 'u'
+			|| ((flags.type == 'x' || flags.type == 'X') && !flags.hash)))
 		blank = '0';
 	if (diff > 0 && !flags.minus)
 	{
