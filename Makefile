@@ -6,10 +6,11 @@ INCLUDE	=	-Iinclude
 
 CC	=	gcc
 
-CFLAGS	=  -Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS	=  -Wall -Wextra -Werror
 
 SRCS	=	$(SRC_DIR)ft_printf.c			\
 			$(SRC_DIR)flags_parse.c			\
+			$(SRC_DIR)justify_print.c		\
 			$(SRC_DIR)utils.c				\
 			$(SRC_DIR)ft_atoi.c				\
 			$(SRC_DIR)ft_itoa.c				\
