@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 17:27:47 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 23:12:14 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 13:17:58 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,11 @@ static int	get_total_int_digits(int n, int precision)
 	return (digits + 1);
 }
 
-static char	*fill_ascii(int n, int size, t_flags flags)
+static int	handle_sign_slot(int n, char *ascii_n, t_flags flags)
 {
-	char	*ascii_n;
-	int		digit;
-	int		is_neg;
+	int	is_neg;
 
 	is_neg = 0;
-	ascii_n = malloc((size + 1) * sizeof(char));
-	if (ascii_n == NULL)
-		return (NULL);
-	ascii_n[size] = 0;
-	size--;
 	if (n < 0)
 	{
 		is_neg = 1;
@@ -48,6 +41,21 @@ static char	*fill_ascii(int n, int size, t_flags flags)
 		ascii_n[0] = ' ';
 	if (n >= 0 && flags.plus)
 		ascii_n[0] = '+';
+	return (is_neg);
+}
+
+static char	*fill_ascii(int n, int size, t_flags flags)
+{
+	char	*ascii_n;
+	int		digit;
+	int		is_neg;
+
+	ascii_n = malloc((size + 1) * sizeof(char));
+	if (ascii_n == NULL)
+		return (NULL);
+	ascii_n[size] = 0;
+	size--;
+	is_neg = handle_sign_slot(n, ascii_n, flags);
 	while (n != 0)
 	{
 		digit = (n % 10);
@@ -71,7 +79,8 @@ char	*ft_itoa(int n, t_flags flags)
 	size = get_total_int_digits(n, flags.precision);
 	if (size < flags.precision && flags.precision != -1)
 		size = flags.precision;
-	else if (size < flags.min_width && flags.zero && flags.precision == -1 && !flags.minus)
+	else if (size < flags.min_width && flags.zero
+		&& flags.precision == -1 && !flags.minus)
 	{
 		size = flags.min_width;
 		if (n < 0 || flags.blank || flags.plus)

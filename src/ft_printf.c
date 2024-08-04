@@ -6,15 +6,16 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:17:34 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 23:38:40 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 13:10:33 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-t_flags init_flags()
+t_flags	init_flags(void)
 {
-	t_flags flags;
+	t_flags	flags;
+
 	flags.blank = 0;
 	flags.hash = 0;
 	flags.min_width = -1;
@@ -27,86 +28,23 @@ t_flags init_flags()
 	return (flags);
 }
 
-static void	advance_format_flags(char const *format, t_flags *flags, int *j)
-{
-	while (format[*j] && ft_strchr("+-0 #",format[*j]))
-	{
-		if (format[*j] == '+')
-			(*flags).plus++;
-		else if (format[*j] == '-')
-			(*flags).minus++;
-		else if (format[*j] == '0')
-			(*flags).zero++;
-		else if (format[*j] == ' ')
-			(*flags).blank++;
-		else if (format[*j] == '#')
-			(*flags).hash++;
-		*j = *j + 1;
-	}
-}
-
-static void	advance_min_max_flags(char const *format, t_flags *flags, int *j, va_list args)
-{
-	int	va_arg;
-
-	if (format[*j] && format[*j] == '*')
-	{
-		va_arg = va_arg(args, int);
-		if (va_arg < 0)
-		{
-			va_arg *= -1;
-			(*flags).minus++;
-		}
-		(*flags).min_width = va_arg;
-		*j = *j + 1;
-	}
-	while (format[*j] && ft_isdigit(format[*j]))
-	{
-		if ((*flags).min_width == -1)
-			(*flags).min_width = ft_atoi(format + *j);
-		*j = *j + 1;
-	}
-	if (format[*j] && format[*j] == '.')
-	{
-		(*flags).period++;
-		(*flags).precision = 0;
-		*j = *j + 1;
-	}
-	if (format[*j] && format[*j] == '*' && (*flags).period > 0)
-	{
-		va_arg = va_arg(args, int);
-		if (va_arg < 0)
-		{
-			va_arg = -1;
-		}
-		(*flags).precision = va_arg;
-		*j = *j + 1;
-	}
-	while (format[*j] && ft_isdigit(format[*j]) && (*flags).period > 0)
-	{
-		if ((*flags).precision == 0)
-			(*flags).precision = ft_atoi(format + *j);
-		*j = *j + 1;
-	}
-}
-
 static int	handle_conversion(char conversion, va_list args, t_flags flags)
 {
-	if (conversion == 'c') //-5
+	if (conversion == 'c')
 		return (print_arg_char(va_arg(args, int), flags));
-	else if (conversion == 's')//-5.1
+	else if (conversion == 's')
 		return (print_arg_string(va_arg(args, char *), flags));
-	else if (conversion == 'u')//-05.1
+	else if (conversion == 'u')
 		return (print_arg_unsigned_decimal(va_arg(args, unsigned int), flags));
-	else if (conversion == 'i')//+-0 5.1
+	else if (conversion == 'i')
 		return (print_arg_decimal(va_arg(args, int), flags));
-	else if (conversion == 'd')//+-0 5.1
+	else if (conversion == 'd')
 		return (print_arg_decimal(va_arg(args, int), flags));
-	else if (conversion == 'p')//-5
+	else if (conversion == 'p')
 		return (print_arg_pointer(va_arg(args, void *), flags));
-	else if (conversion == 'x')//-0#5.1
+	else if (conversion == 'x')
 		return (print_arg_hex(va_arg(args, unsigned int), flags, 0));
-	else if (conversion == 'X')//-0#5.1
+	else if (conversion == 'X')
 		return (print_arg_hex(va_arg(args, unsigned int), flags, 1));
 	else if (conversion == '%')
 	{
@@ -155,8 +93,7 @@ int	ft_printf(char const *format, ...)
 			size += flags_read(format, args, &i);
 		else
 		{
-			ft_putchar(format[i]);
-			size++;
+			size += write(1, &(format[i]), 1);
 			i++;
 		}
 	}

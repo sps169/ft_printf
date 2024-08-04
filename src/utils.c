@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 19:27:35 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/02 22:13:12 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 13:04:53 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,6 @@ size_t	ft_strlen(const char *str)
 			len++;
 	}
 	return (len);
-}
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
 }
 
 char	*ft_strchr(const char *s, int c)
