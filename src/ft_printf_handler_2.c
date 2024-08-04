@@ -6,7 +6,7 @@
 /*   By: sperez-s <sperez-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 13:15:08 by sperez-s          #+#    #+#             */
-/*   Updated: 2024/08/04 13:21:11 by sperez-s         ###   ########.fr       */
+/*   Updated: 2024/08/04 15:19:11 by sperez-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	print_arg_char(char character, t_flags flags)
 int	print_arg_string(char *string, t_flags flags)
 {
 	char	*print;
+	int		n;
 
 	if (!string)
 	{
@@ -46,10 +47,12 @@ int	print_arg_string(char *string, t_flags flags)
 		print = ft_substr(string, 0, flags.precision);
 		if (!print)
 			return (0);
+		n = justify_print(print, flags);
+		free(print);
+		return (n);
 	}
 	else
-		print = string;
-	return (justify_print(print, flags));
+		return (justify_print(string, flags));
 }
 
 int	print_arg_decimal(int decimal, t_flags flags)
